@@ -3,6 +3,7 @@ const connectDB = require("./src/config/db");
 const seedAdmin = require("./src/utils/seedAdmin");
 const authRoutes = require("./src/routes/authRoutes");
 const userRoutes = require("./src/routes/userRoutes");
+const recordRoutes = require("./src/routes/recordRoutes");
 
 // Load environment variables
 require("dotenv").config();
@@ -20,6 +21,7 @@ app.use(express.json());
 //routes
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
+app.use("/api/records", recordRoutes);
 
 app.get("/", (req, res) => {
   res.send("Finance Backend Running");

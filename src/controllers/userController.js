@@ -1,5 +1,6 @@
 const userModel = require("../models/userModel");
 const bcrypt = require("bcryptjs");
+const mongoose = require("mongoose");
 
 const createUser = async (req, res) => {
   try {
@@ -74,6 +75,12 @@ const getUsers = async (req, res) => {
 };
 const getUserById = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid record id",
+      });
+    }
     const user = await userModel.findById(req.params.id).select("-password");
     if (!user) {
       return res.status(404).send({
@@ -96,6 +103,12 @@ const getUserById = async (req, res) => {
 };
 const updateUserStatus = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid record id",
+      });
+    }
     const { status } = req.body || {};
     if (!status) {
       return res.status(400).send({
@@ -136,6 +149,12 @@ const updateUserStatus = async (req, res) => {
 };
 const updateUserRole = async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({
+        success: false,
+        message: "Invalid record id",
+      });
+    }
     const { role } = req.body || {};
     if (!role) {
       return res.status(400).send({
