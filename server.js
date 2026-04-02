@@ -4,6 +4,7 @@ const seedAdmin = require("./src/utils/seedAdmin");
 const authRoutes = require("./src/routes/authRoutes");
 const userRoutes = require("./src/routes/userRoutes");
 const recordRoutes = require("./src/routes/recordRoutes");
+const dashboardRoutes = require("./src/routes/dashboardRoutes");
 
 // Load environment variables
 require("dotenv").config();
@@ -22,6 +23,7 @@ app.use(express.json());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/records", recordRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
   res.send("Finance Backend Running");
