@@ -10,7 +10,7 @@ const seedAdmin = async () => {
       console.log("Admin already exists");
       return;
     }
-    const hashedPassword = await bcrypt.hash("Amit@123", 10);
+    const hashedPassword = await bcrypt.hash("Amit@1234", 10);
 
     await userModel.create({
       name: "Admin",

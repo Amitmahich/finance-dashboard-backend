@@ -1,6 +1,7 @@
 const express = require("express");
 const connectDB = require("./src/config/db");
 const seedAdmin = require("./src/utils/seedAdmin");
+const authRoutes = require("./src/routes/authRoutes");
 
 // Load environment variables
 require("dotenv").config();
@@ -16,6 +17,7 @@ connectDB().then(() => {
 app.use(express.json());
 
 //routes
+app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {
   res.send("Finance Backend Running");
 });
