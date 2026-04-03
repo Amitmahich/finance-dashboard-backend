@@ -139,7 +139,10 @@ const updateRecord = async (req, res) => {
     }
     const { amount, type, category, date, note } = req.body || {};
 
-    const record = await recordModel.findById(req.params.id);
+    const record = await recordModel.findOne({
+      _id: req.params.id,
+      isDeleted: false,
+    });
 
     if (!record) {
       return res.status(404).send({
@@ -204,7 +207,7 @@ const updateRecord = async (req, res) => {
     await record.save();
 
     res.status(200).send({
-      success: false,
+      success: true,
       message: "Record updated successfully",
       data: record,
     });
