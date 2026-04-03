@@ -228,7 +228,10 @@ const deleteRecord = async (req, res) => {
         message: "Invalid record id",
       });
     }
-    const record = await recordModel.findById(req.params.id);
+    const record = await recordModel.findOne({
+      _id: req.params.id,
+      isDeleted: false,
+    });
 
     if (!record) {
       return res.status(404).send({

@@ -11,7 +11,7 @@ const createUser = async (req, res) => {
         message: "All fields are required",
       });
     }
-    const existingUser = await userModel.findOne({ email});
+    const existingUser = await userModel.findOne({ email });
     if (existingUser) {
       return res.status(400).send({
         success: false,
@@ -50,7 +50,7 @@ const deleteUser = async (req, res) => {
     const user = await userModel.findByIdAndUpdate(
       req.params.id,
       { isDeleted: true },
-      { new: true },
+      { returnDocument: "after" },
     );
     if (!user) {
       return res.status(404).send({
@@ -162,7 +162,7 @@ const updateUserStatus = async (req, res) => {
       .findOneAndUpdate(
         { _id: req.params.id, isDeleted: false },
         { status },
-        { new: true },
+        { returnDocument: "after" },
       )
       .select("-password");
 
@@ -211,7 +211,7 @@ const updateUserRole = async (req, res) => {
       .findOneAndUpdate(
         { _id: req.params.id, isDeleted: false },
         { role },
-        { new: true },
+        { returnDocument: "after" },
       )
       .select("-password");
 
