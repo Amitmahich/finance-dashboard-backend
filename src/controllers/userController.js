@@ -11,7 +11,7 @@ const createUser = async (req, res) => {
         message: "All fields are required",
       });
     }
-    const existingUser = await userModel.findOne({ email });
+    const existingUser = await userModel.findOne({ email, isDeleted: false });
     if (existingUser) {
       return res.status(400).send({
         success: false,
@@ -39,6 +39,37 @@ const createUser = async (req, res) => {
     });
   }
 };
+const deleteUser = async (req, res) => {
+  try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).send({
+        success: false,
+        message: "Invalid user Id",
+      });
+    }
+    const user = await userModel.findByIdAndUpdate(
+      req.params.id,
+      { isDeleted: true },
+      { new: true },
+    );
+    if (!user) {
+      return res.status(404).send({
+        success: false,
+        message: "User not found",
+      });
+    }
+    res.status(200).send({
+      success: true,
+      message: "User deleted successfully",
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Failed to delete user",
+    });
+  }
+};
 const getUsers = async (req, res) => {
   try {
     const { role, status } = req.query;
@@ -46,6 +77,8 @@ const getUsers = async (req, res) => {
 
     // excluding logged-in user
     filter._id = { $ne: req.user.id };
+
+    filter.isDeleted = false;
 
     //filtering by role
     if (role) {
@@ -78,10 +111,12 @@ const getUserById = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid record id",
+        message: "Invalid user id",
       });
     }
-    const user = await userModel.findById(req.params.id).select("-password");
+    const user = await userModel
+      .findOne({ _id: req.params.id, isDeleted: false })
+      .select("-password");
     if (!user) {
       return res.status(404).send({
         success: false,
@@ -106,7 +141,7 @@ const updateUserStatus = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid record id",
+        message: "Invalid user id",
       });
     }
     const { status } = req.body || {};
@@ -124,7 +159,11 @@ const updateUserStatus = async (req, res) => {
       });
     }
     const user = await userModel
-      .findByIdAndUpdate(req.params.id, { status }, { new: true })
+      .findOneAndUpdate(
+        { _id: req.params.id, isDeleted: false },
+        { status },
+        { new: true },
+      )
       .select("-password");
 
     if (!user) {
@@ -152,7 +191,7 @@ const updateUserRole = async (req, res) => {
     if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
       return res.status(400).json({
         success: false,
-        message: "Invalid record id",
+        message: "Invalid user id",
       });
     }
     const { role } = req.body || {};
@@ -169,7 +208,11 @@ const updateUserRole = async (req, res) => {
       });
     }
     const user = await userModel
-      .findByIdAndUpdate(req.params.id, { role }, { new: true })
+      .findOneAndUpdate(
+        { _id: req.params.id, isDeleted: false },
+        { role },
+        { new: true },
+      )
       .select("-password");
 
     if (!user) {
@@ -199,4 +242,5 @@ module.exports = {
   getUserById,
   updateUserStatus,
   updateUserRole,
+  deleteUser,
 };
