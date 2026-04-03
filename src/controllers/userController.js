@@ -11,7 +11,7 @@ const createUser = async (req, res) => {
         message: "All fields are required",
       });
     }
-    const existingUser = await userModel.findOne({ email, isDeleted: false });
+    const existingUser = await userModel.findOne({ email});
     if (existingUser) {
       return res.status(400).send({
         success: false,
