@@ -11,7 +11,7 @@ const loginController = async (req, res) => {
         message: "Email and password are required",
       });
     }
-    const user = await userModel.findOne({ email });
+    const user = await userModel.findOne({ email, isDeleted: false });
     if (!user) {
       return res.status(404).send({
         success: false,
